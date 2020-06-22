@@ -38,7 +38,15 @@ export class GraphQLClient {
       ...others,
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch (err) {
+      console.error('Status:', response.status);
+      console.error('OK?:', response.ok);
+      console.error('Error parsing JSON', err);
+      throw Error;
+    }
 
     if (response.ok && !result.errors && result.data) {
       return result.data;

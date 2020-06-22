@@ -101,7 +101,7 @@ export const importIssues = async (apiKey: string, importer: Importer) => {
           name
         }
       }
-    }  
+    }
   `)) as QueryResponse;
 
   const teams = queryInfo.teams.nodes;
@@ -334,6 +334,7 @@ export const importIssues = async (apiKey: string, importer: Importer) => {
         ? existingUserMap[issue.assigneeId.toLowerCase()]
         : importAnswers.targetAssignee || me;
 
+    console.log('creating issue', issue.title);
     await linear(
       `
           mutation createIssue(
@@ -342,6 +343,7 @@ export const importIssues = async (apiKey: string, importer: Importer) => {
               $title: String!,
               $description: String,
               $priority: Int,
+              $estimate: Int,
               $labelIds: [String!]
               $stateId: String
               $assigneeId: String
@@ -352,6 +354,7 @@ export const importIssues = async (apiKey: string, importer: Importer) => {
                                 title: $title,
                                 description: $description,
                                 priority: $priority,
+                                estimate: $estimate,
                                 labelIds: $labelIds
                                 stateId: $stateId
                                 assigneeId: $assigneeId
@@ -366,11 +369,13 @@ export const importIssues = async (apiKey: string, importer: Importer) => {
         title: issue.title,
         description,
         priority: issue.priority,
+        estimate: issue.estimate,
         labelIds,
         stateId,
         assigneeId,
       }
     );
+    console.log('created issue', issue.title);
   }
 
   console.error(

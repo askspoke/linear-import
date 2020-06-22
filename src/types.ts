@@ -16,6 +16,8 @@ export interface Issue {
   labels?: string[];
   /** Link to original issue. */
   url?: string;
+  /** Estimate for the issue */
+  estimate?: number;
   /** When the issue was created. */
   createdAt?: Date;
 }
